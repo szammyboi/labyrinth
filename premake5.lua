@@ -10,7 +10,48 @@ workspace "Mythos"
 
 outputdir = "%{cfg.buildcfg}"
 
---include "vendor/glfw-premake"
+project "GLFW"
+	kind "StaticLib"
+    systemversion "latest"
+	language "C"
+	staticruntime "off"
+	warnings "off"
+
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+	files
+	{
+		"./vendor/glfw/include/GLFW/glfw3.h",
+		"./vendor/glfw/include/GLFW/glfw3native.h",
+		"./vendor/glfw/src/**.h",
+        "./vendor/glfw/src/**.c"
+	}
+
+	defines 
+	{ 
+		"_CRT_SECURE_NO_WARNINGS"
+	}
+
+    links 
+    {
+        "gdi32"
+    }
+    
+	filter "configurations:debug"
+		runtime "Debug"
+		symbols "on"
+
+	filter "configurations:release"
+		runtime "Release"
+		optimize "speed"
+
+    filter "system:linux"
+        pic "On"
+        defines "_GLFW_X11"
+
+    filter "system:windows"
+        defines "_GLFW_WIN32"
 
 project "Labyrinth"
     kind "ConsoleApp"
@@ -23,10 +64,21 @@ project "Labyrinth"
 
     symbols "on"
     buildoptions {"-Werror", "-Wuninitialized", "-Wno-narrowing"}
+    
     files 
     { 
         "src/**.h",
         "src/**.cpp"
+    }
+
+    includedirs
+    {
+        "./vendor/glm"
+    }
+
+    links
+    {
+        "glfw"
     }
 
     filter "configurations:debug"
