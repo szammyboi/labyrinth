@@ -53,6 +53,37 @@ project "GLFW"
     filter "system:windows"
         defines "_GLFW_WIN32"
 
+project "Glad"
+    kind "StaticLib"
+    language "C"
+    staticruntime "off"
+    
+    targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+    files
+    {
+        "./vendor/glad/include/glad/gl.h",
+        "./vendor/glad/include/KHR/khrplatform.h",
+        "./vendor/glad/src/gl.c"
+    }
+
+    includedirs
+    {
+        "./vendor/glad/include"
+    }
+    
+    filter "system:windows"
+        systemversion "latest"
+
+    filter "configurations:debug"
+        runtime "Debug"
+        symbols "on"
+
+    filter "configurations:release"
+        runtime "Release"
+        optimize "on"
+
 project "Labyrinth"
     kind "ConsoleApp"
     language "C++"
@@ -68,18 +99,33 @@ project "Labyrinth"
     files 
     { 
         "src/**.h",
-        "src/**.cpp"
+        "src/**.cpp",
+        "./vendor/glad/include/gl.h"
     }
 
     includedirs
     {
-        "./vendor/glm"
+        "./vendor/glm",
+        "./vendor/glfw/include",
+        "./vendor/glad/include"
     }
 
     links
     {
-        "glfw"
+        "glfw",
+        "Glad"
     }
 
     filter "configurations:debug"
         defines "DEBUG"
+
+    filter "system:linux"
+        links
+        {
+            "GL",
+            "X11",
+            "pthread",
+            "Xrandr",
+            "Xi",
+            "dl",
+        }
