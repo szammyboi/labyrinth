@@ -129,3 +129,10 @@ project "Labyrinth"
             "Xi",
             "dl",
         }
+
+    filter "system:windows"
+        links
+        {
+            "opengl32",
+            "gdi32"
+        }
