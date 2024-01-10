@@ -107,7 +107,8 @@ project "Labyrinth"
     {
         "./vendor/glm",
         "./vendor/glfw/include",
-        "./vendor/glad/include"
+        "./vendor/glad/include",
+        "./vendor/stb/include"
     }
 
     links
